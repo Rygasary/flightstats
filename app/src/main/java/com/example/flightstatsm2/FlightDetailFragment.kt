@@ -40,7 +40,7 @@ class FlightDetailFragment : Fragment() {
     ): View? {
 
         viewModel = ViewModelProvider(requireActivity()).get(FlightListViewModel::class.java)
-        viewModel.getSelectedFlightNameLiveData().observe(this,{
+        viewModel.getSelectedFlightNameLiveData().observe(this, androidx.lifecycle.Observer{
             flight_name.text = it
         })
 

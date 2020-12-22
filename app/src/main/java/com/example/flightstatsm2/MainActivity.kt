@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.getBeginDateLiveData()
-            .observe(this, { displaySelectedDate(fromDate, it) })
+            .observe(this, androidx.lifecycle.Observer{ displaySelectedDate(fromDate, it) })
 
         viewModel.getEndDateLiveData()
-            .observe(this, { displaySelectedDate(toDate, it) })
+            .observe(this, androidx.lifecycle.Observer{ displaySelectedDate(toDate, it) })
 
         fromDate.setOnClickListener { showDatePicker(fromDate) }
         toDate.setOnClickListener { showDatePicker(toDate) }

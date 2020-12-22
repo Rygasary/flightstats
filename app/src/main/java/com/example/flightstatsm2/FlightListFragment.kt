@@ -42,7 +42,7 @@ class FlightListFragment : Fragment(), FlightListRecyclerAdapter.OnItemClickList
         savedInstanceState: Bundle?
     ): View? {
         viewModel = ViewModelProvider(requireActivity()).get(FlightListViewModel::class.java)
-        viewModel.flightListLiveData.observe(this, {
+        viewModel.flightListLiveData.observe(this, androidx.lifecycle.Observer{
             if (it == null || it.isEmpty()) {
                 //DISPLAY ERROR
             } else {
@@ -55,7 +55,7 @@ class FlightListFragment : Fragment(), FlightListRecyclerAdapter.OnItemClickList
             }
         })
 
-        viewModel.isLoadingLiveData.observe(this, {
+        viewModel.isLoadingLiveData.observe(this, androidx.lifecycle.Observer{
             if (it) {
                 progressBar.visibility = View.VISIBLE
             } else {

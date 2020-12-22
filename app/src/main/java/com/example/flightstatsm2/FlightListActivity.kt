@@ -25,7 +25,7 @@ class FlightListActivity : AppCompatActivity() {
             intent.getLongExtra("end", 0)
         )
 
-        viewModel.getSelectedFlightNameLiveData().observe(this, {
+        viewModel.getSelectedFlightNameLiveData().observe(this, androidx.lifecycle.Observer{
             //switch fragment
             val newFragment: FlightDetailFragment = FlightDetailFragment.newInstance()
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
