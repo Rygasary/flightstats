@@ -7,10 +7,17 @@
     android:background="#FFFFFF">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.example.flightstatsm2.MyMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
+        android:id="@+id/flight_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/flight_name"
         android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
