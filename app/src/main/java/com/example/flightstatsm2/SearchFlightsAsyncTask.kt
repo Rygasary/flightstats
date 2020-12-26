@@ -52,6 +52,7 @@ class SearchFlightsAsyncTask(requestListener: RequestsManager.RequestListener) :
             params["begin"] = searchModel.begin.toString()
             params["end"] = searchModel.end.toString()
         }
+        println(params)
         return params
     }
 }

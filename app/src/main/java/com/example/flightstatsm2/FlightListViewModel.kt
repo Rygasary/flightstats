@@ -33,7 +33,7 @@ class FlightListViewModel : ViewModel(), RequestsManager.RequestListener {
             begin,
             end
         )
-        val baseUrl: String = if (isArrival) {
+        /*val baseUrl: String = if (isArrival) {
             "https://opensky-network.org/api/flights/arrival"
         } else {
             "https://opensky-network.org/api/flights/departure"
@@ -56,8 +56,8 @@ class FlightListViewModel : ViewModel(), RequestsManager.RequestListener {
                 flightListLiveData.value = flightList
             }
 
-        }
-        // SearchFlightsAsyncTask(this).execute(searchDataModel)
+        }*/
+        SearchFlightsAsyncTask(this).execute(searchDataModel)
     }
 
     private fun getRequestParams(searchModel: SearchDataModel?): Map<String, String>? {
@@ -71,11 +71,15 @@ class FlightListViewModel : ViewModel(), RequestsManager.RequestListener {
     }
 
     override fun onRequestSuccess(result: String?) {
-        TODO("Not yet implemented")
+        isLoadingLiveData.value = false
+        val flightList = Utils.getFlightListFromString(result!!)
+        Log.d("models list", flightList.toString())
+        flightListLiveData.value = flightList
     }
 
     override fun onRequestFailed() {
-        TODO("Not yet implemented")
+        isLoadingLiveData.value = false
+        Log.e("Request", "problem")
     }
 
     fun updateSelectedFlightName(flightName: String) {
