@@ -132,8 +132,8 @@ class Utils private constructor() {
                 val waypointJsonArray: JSONArray = waypointFromObject.getJSONArray(i)
                 val waypointModel = WaypointModel(
                     waypointJsonArray.getInt(0),
-                    waypointJsonArray.getLong(1),
-                    waypointJsonArray.getLong(2),
+                    waypointJsonArray.getDouble(1),
+                    waypointJsonArray.getDouble(2),
                     waypointJsonArray.getLong(3),
                     waypointJsonArray.getLong(4),
                     waypointJsonArray.getBoolean(5)
