@@ -11,9 +11,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_flight_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -65,11 +63,13 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
         viewModel = ViewModelProvider(requireActivity()).get(FlightListViewModel::class.java)
         searchIcao = viewModel.getSelectedIcao()
         searchTime = viewModel.getSelectedTime()
-        searchTrack(searchIcao!!, searchTime!!)
 
         mMapView = rootView.findViewById(R.id.mapView) as MapView
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
+
+        mMapView.getMapAsync(this)
+
         return rootView
     }
 
@@ -77,6 +77,8 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
         val trackModel: TrackModel = Utils.getTrackFromString(result!!)
         departureArrival = DepartureArrival(LatLng(trackModel.path[0].lat.toDouble(),trackModel.path[0].long.toDouble()),
                                             LatLng(trackModel.path.last().lat.toDouble(),trackModel.path.last().long.toDouble()))
+        updateMap(departureArrival)
+        Log.i("AppelFini","L'appel API a réussi fréro")
     }
 
     override fun onRequestFailed() {
@@ -87,7 +89,27 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
 
         val searchTrackDataModel = SearchTrackDataModel(icao, time)
         SearchTracksAsyncTask(this).execute(searchTrackDataModel)
+
+        Log.i("AppelDone","L'appel API a été lancé fréro")
     }
+
+    fun updateMap(departureArrival: DepartureArrival){
+        myGoogleMap.addMarker(
+            MarkerOptions().position(departureArrival.departureCoordinates)
+        )
+        myGoogleMap.addMarker(
+            MarkerOptions().position(departureArrival.arrivalCoordinates)
+        )
+        Log.i("Coordinates",departureArrival.departureCoordinates.toString() + " - " + departureArrival.arrivalCoordinates.toString())
+
+        val poi = ArrayList<LatLng>()
+        poi.add(departureArrival.departureCoordinates) //from
+        poi.add(departureArrival.arrivalCoordinates) // to
+        val polyline: Polyline = myGoogleMap.addPolyline(PolylineOptions().addAll(poi))
+        this.zoomToFit(departureArrival.departureCoordinates, departureArrival.arrivalCoordinates)
+
+    }
+
     companion object {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
@@ -100,19 +122,14 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
     override fun onMapReady(googleMap: GoogleMap) {
         myGoogleMap = googleMap
         myGoogleMap.setOnMapLoadedCallback(this)
-        myGoogleMap.addMarker(
-            MarkerOptions().position(departureArrival.departureCoordinates)
-        )
-        myGoogleMap.addMarker(
-            MarkerOptions().position(departureArrival.arrivalCoordinates)
-        )
-
+        searchTrack(searchIcao!!, searchTime!!)
+        Log.i("MapIsREADYYYYYYYYY","La map est prête fréro")
     }
 
     override fun onMapLoaded() {
-        this.zoomToFit(departureArrival.departureCoordinates, departureArrival.arrivalCoordinates)
+        Log.i("MapIsLOADEDDDDDD","La map a chargé fréro")
     }
-    private fun zoomToFit(departure: LatLng?, arrival: LatLng?) {
+    private fun zoomToFit(departure: LatLng, arrival: LatLng) {
         val coordinates = LatLngBounds.Builder()
             .include(departure)
             .include(arrival)
