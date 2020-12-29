@@ -1,10 +1,12 @@
 package com.example.flightstatsm2
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_flight_list.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class FlightListActivity : AppCompatActivity() {
@@ -18,7 +20,7 @@ class FlightListActivity : AppCompatActivity() {
         val isMobile = detail_container == null
 
         viewModel = ViewModelProvider(this).get(FlightListViewModel::class.java)
-        viewModel.search(
+        viewModel.searchFlight(
             intent.getStringExtra("icao")!!,
             intent.getBooleanExtra("isArrival", false),
             intent.getLongExtra("begin", 0),

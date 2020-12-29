@@ -14,7 +14,7 @@ class SearchTracksAsyncTask(requestListener: RequestsManager.RequestListener) :
 
     override fun doInBackground(vararg searchTrackModel: SearchTrackDataModel?): String? {
         val data = searchTrackModel[0]
-        val baseUrl: String = "https://opensky-network.org/api/tracks"
+        val baseUrl: String = "https://opensky-network.org/api/tracks/all"
 
         val result: String? =
             RequestsManager.get(baseUrl, getRequestParams(searchTrackModel = searchTrackModel[0]))
@@ -40,7 +40,7 @@ class SearchTracksAsyncTask(requestListener: RequestsManager.RequestListener) :
     private fun getRequestParams(searchTrackModel: SearchTrackDataModel?): Map<String, String>? {
         val params = HashMap<String, String>()
         if (searchTrackModel != null) {
-            params["airport"] = searchTrackModel.icao24
+            params["icao24"] = searchTrackModel.icao
             params["time"] = searchTrackModel.time.toString()
         }
         return params

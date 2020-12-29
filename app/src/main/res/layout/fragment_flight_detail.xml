@@ -8,9 +8,9 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.flightstatsm2.MyMapFragment"
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

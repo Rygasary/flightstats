@@ -15,59 +15,26 @@ import kotlinx.coroutines.withContext
  */
 class FlightListViewModel : ViewModel(), RequestsManager.RequestListener {
 
-
     val flightListLiveData: MutableLiveData<List<FlightModel>> = MutableLiveData()
     val isLoadingLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val selectedFlightNameLiveData: MutableLiveData<String> = MutableLiveData()
+    private val selectedIcaoLiveData: MutableLiveData<String> = MutableLiveData()
+    private val selectedTimeLiveData: MutableLiveData<Long> = MutableLiveData()
 
     fun getSelectedFlightNameLiveData(): LiveData<String> {
         return selectedFlightNameLiveData
     }
-
-
-    fun search(icao: String, isArrival: Boolean, begin: Long, end: Long) {
-
-        val searchDataModel = SearchDataModel(
-            isArrival,
-            icao,
-            begin,
-            end
-        )
-        /*val baseUrl: String = if (isArrival) {
-            "https://opensky-network.org/api/flights/arrival"
-        } else {
-            "https://opensky-network.org/api/flights/departure"
-        }
-
-        viewModelScope.launch {
-            //start loading
-            isLoadingLiveData.value = true
-            val result = withContext(Dispatchers.IO) {
-                RequestsManager.getSuspended(baseUrl, getRequestParams(searchDataModel))
-            }
-            //end loading
-            isLoadingLiveData.value = false
-            if (result == null) {
-                Log.e("Request", "problem")
-
-            } else {
-                val flightList = Utils.getFlightListFromString(result)
-                Log.d("models list", flightList.toString())
-                flightListLiveData.value = flightList
-            }
-
-        }*/
-        SearchFlightsAsyncTask(this).execute(searchDataModel)
+    fun getSelectedIcao(): String {
+        return selectedIcaoLiveData.value!!
+    }
+    fun getSelectedTime(): Long {
+        return selectedTimeLiveData.value!!
     }
 
-    private fun getRequestParams(searchModel: SearchDataModel?): Map<String, String>? {
-        val params = HashMap<String, String>()
-        if (searchModel != null) {
-            params["airport"] = searchModel.icao
-            params["begin"] = searchModel.begin.toString()
-            params["end"] = searchModel.end.toString()
-        }
-        return params
+    fun searchFlight(icao: String, isArrival: Boolean, begin: Long, end: Long) {
+
+        val searchDataModel = SearchDataModel(isArrival, icao, begin, end)
+        SearchFlightsAsyncTask(this).execute(searchDataModel)
     }
 
     override fun onRequestSuccess(result: String?) {
@@ -84,5 +51,13 @@ class FlightListViewModel : ViewModel(), RequestsManager.RequestListener {
 
     fun updateSelectedFlightName(flightName: String) {
         selectedFlightNameLiveData.value = flightName
+    }
+
+    fun updateSelectedIcao(icao: String){
+        selectedIcaoLiveData.value = icao
+    }
+
+    fun updateSelectedTime(time: Long){
+        selectedTimeLiveData.value = time
     }
 }

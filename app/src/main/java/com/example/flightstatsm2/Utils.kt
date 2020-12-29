@@ -6,9 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import org.apache.commons.io.IOUtils
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.*
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
@@ -120,6 +122,32 @@ class Utils private constructor() {
                 flightModelList.add(Gson().fromJson(flightJson.asJsonObject, FlightModel::class.java))
             }
             return flightModelList
+        }
+
+        fun getTrackFromString(objectAsString: String): TrackModel{
+            val trackJsonObject = JSONObject(objectAsString)
+            val waypointFromObject: JSONArray = trackJsonObject.getJSONArray("path")
+            val waypointList = ArrayList<WaypointModel>()
+            for(i in 0 until waypointFromObject.length()){
+                val waypointJsonArray: JSONArray = waypointFromObject.getJSONArray(i)
+                val waypointModel = WaypointModel(
+                    waypointJsonArray.getInt(0),
+                    waypointJsonArray.getLong(1),
+                    waypointJsonArray.getLong(2),
+                    waypointJsonArray.getLong(3),
+                    waypointJsonArray.getLong(4),
+                    waypointJsonArray.getBoolean(5)
+                )
+                waypointList.add(waypointModel)
+            }
+            val trackModel = TrackModel(
+                trackJsonObject.getString("icao24"),
+                trackJsonObject.getString("callsign"),
+                trackJsonObject.getInt("startTime"),
+                trackJsonObject.getInt("endTime"),
+                waypointList
+            )
+            return trackModel
         }
 
         private fun convertStringToJsonArray(arrayAsString: String): JsonArray{

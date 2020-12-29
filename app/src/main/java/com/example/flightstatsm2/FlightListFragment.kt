@@ -69,10 +69,12 @@ class FlightListFragment : Fragment(), FlightListRecyclerAdapter.OnItemClickList
         return inflater.inflate(R.layout.fragment_flight_list, container, false)
     }
 
-    override fun onItemClicked(flightName: String) {
+    override fun onItemClicked(flightName: String, icao: String, time: Long) {
         //DO SOMETHING WHEN CLICKING ON THE FLIGHT NAME
         Log.d("ViewClicked", flightName)
         viewModel.updateSelectedFlightName(flightName)
+        viewModel.updateSelectedIcao(icao)
+        viewModel.updateSelectedTime(time)
     }
 
     companion object {
