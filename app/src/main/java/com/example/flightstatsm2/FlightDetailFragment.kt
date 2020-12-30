@@ -2,16 +2,20 @@ package com.example.flightstatsm2
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.android.synthetic.main.fragment_flight_detail.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -75,8 +79,8 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
 
     override fun onRequestSuccess(result: String?) {
         val trackModel: TrackModel = Utils.getTrackFromString(result!!)
-        departureArrival = DepartureArrival(LatLng(trackModel.path[0].lat.toDouble(),trackModel.path[0].long.toDouble()),
-                                            LatLng(trackModel.path.last().lat.toDouble(),trackModel.path.last().long.toDouble()))
+        departureArrival = DepartureArrival(LatLng(trackModel.path[0].lat,trackModel.path[0].long),
+                                            LatLng(trackModel.path.last().lat,trackModel.path.last().long))
         updateMap(departureArrival)
         Log.i("AppelFini","L'appel API a réussi fréro")
     }
@@ -102,10 +106,10 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
         )
         Log.i("Coordinates",departureArrival.departureCoordinates.toString() + " - " + departureArrival.arrivalCoordinates.toString())
 
-        val poi = ArrayList<LatLng>()
-        poi.add(departureArrival.departureCoordinates) //from
-        poi.add(departureArrival.arrivalCoordinates) // to
-        val polyline: Polyline = myGoogleMap.addPolyline(PolylineOptions().addAll(poi))
+        val traitDepToArr = ArrayList<LatLng>()
+        traitDepToArr.add(departureArrival.departureCoordinates) //from
+        traitDepToArr.add(departureArrival.arrivalCoordinates) // to
+        myGoogleMap.addPolyline(PolylineOptions().addAll(traitDepToArr))
         this.zoomToFit(departureArrival.departureCoordinates, departureArrival.arrivalCoordinates)
 
     }
@@ -126,6 +130,8 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
         Log.i("MapIsREADYYYYYYYYY","La map est prête fréro")
     }
 
+
+
     override fun onMapLoaded() {
         Log.i("MapIsLOADEDDDDDD","La map a chargé fréro")
     }
@@ -134,7 +140,9 @@ class FlightDetailFragment : Fragment(), OnMapReadyCallback, RequestsManager.Req
             .include(departure)
             .include(arrival)
             .build()
+        myGoogleMap.setOnMapLoadedCallback(OnMapLoadedCallback {
+            myGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(coordinates, 400))
+        })
 
-        myGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(coordinates, 400))
     }
 }
